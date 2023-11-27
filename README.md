@@ -1,9 +1,9 @@
 # zscore
 z-score calculator
 
-Calculates Altman's z-score of publicly-traded companies (listed on the tsx, nyse, or nasdaq) using yahoo finance's financial data.
+Calculates Altman's z-score of publicly-traded companies (listed on the tsx, nyse, or nasdaq) using yahoo finance.
 
-Takes ~20 seconds to compute.
+All inputs are based on financial data of lastest quarter. Takes ~20 seconds to compute.
 
 Demo:
 
