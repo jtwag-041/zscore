@@ -1,5 +1,7 @@
 #### altman z-score calculator
 
+# import libraries
+
 import os
 import pandas as pd
 import numpy as np
@@ -14,6 +16,13 @@ from datetime import datetime
 from ttkbootstrap.constants import *
 from numpy import math
 import requests
+
+# dataframe for output file
+
+cols = ['ticker','name', 'z score']
+df = pd.DataFrame(columns = cols)
+
+# create query box
 
 root = ttk.Window(themename='litera')
 root.title('Altman Z-Score Calculator')
@@ -32,23 +41,16 @@ lst_label_4.pack(anchor='c', padx=50)
 lst_label_4 = ttk.Label(root, text = "Greater Than 3.0 = Safe Zone")
 lst_label_4.pack(anchor='c', padx=50)
 
-
 entry_lst = ttk.Entry(root)
 entry_lst.pack(pady=10,padx=(5,5))
 
-def beta_comps():    
-    global lst
-    global name
-    global beta
-    global mc
-    global debt
-    global d_to_e
-    global d_to_d_to_e
-    global taxrate
-    global beta
-    global i
+# gather data
+
+def zscore():    
     global df
-    
+    global name
+    global i
+
     i = entry_lst.get()
     name = Ticker(''+i+'').price.get(''+i+'').get('longName')
     rev = Ticker(''+i+'').get_financial_data('TotalRevenue',frequency='q')['TotalRevenue'][-1]
@@ -64,7 +66,9 @@ def beta_comps():
     ap = Ticker(''+i+'').get_financial_data('AccountsPayable',frequency='q')['AccountsPayable'][-1]
     re = Ticker(''+i+'').get_financial_data('RetainedEarnings', frequency = 'q')['RetainedEarnings'][-1]
     mc = Ticker(''+i+'').price.get(''+i+'').get('marketCap')
-            
+
+# compute zscore            
+
     wc = ar + inv + ap
     a = wc / tot_a
     b = re / tot_a
@@ -72,19 +76,24 @@ def beta_comps():
     d = mc / tot_l
     e = rev / tot_a
     z_score = round((1.0*a) + (1.4*b) + (3.3*c) + (0.6*d) + (0.99*e),2)
+    df = df.append({'ticker':i,'name':name,'z score':z_score}, ignore_index = True)
     if isinstance(z_score,float) == True:
         messagebox.showinfo(message = "z score for "+str(name)+" = "+str(z_score))
+    
+# export and save ouput
 
-# export dataframe to excel
 def save_file():
     global file
-    file = filedialog.asksaveasfile(mode='w', filetypes = [('Excel Workbook','.xlsx'),('CSV (Comma delimited)', '.csv'),('PDF', '.pdf')], defaultextension = ".xlsx")
-    df.to_excel(file.name)
-
+    file = filedialog.asksaveasfile(mode='w', filetypes = [('Excel Workbook','.xlsx'),('CSV (Comma delimited)', '.csv')], defaultextension = ".xlsx")
+    if os.path.splitext(file.name)[-1] == '.xlsx':
+        df.to_excel(file.name)
+    if os.path.splitext(file.name)[-1] == '.csv':
+        df.to_csv(file.name)
+    
 save = ttk.Button(root, text = 'save', command=save_file, bootstyle='primary', width=8) 
 save.pack(pady=10, padx=(10,20),side=RIGHT)
 
-lst_button = ttk.Button(root, text='run', command=beta_comps, bootstyle='success', width=8)
+lst_button = ttk.Button(root, text='run', command=zscore, bootstyle='success', width=8)
 lst_button.pack(pady=10, padx=10, side=RIGHT)
 
 root.mainloop()
