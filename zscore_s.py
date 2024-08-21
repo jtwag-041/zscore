@@ -4,7 +4,6 @@
 
 import os
 import pandas as pd
-import numpy as np
 import tkinter
 import ttkbootstrap as ttk
 from tkinter import messagebox
@@ -14,7 +13,6 @@ import yahooquery
 from yahooquery import Ticker
 from datetime import datetime
 from ttkbootstrap.constants import *
-from numpy import math
 import requests
 
 # dataframe for output file
