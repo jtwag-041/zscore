@@ -48,6 +48,7 @@ entry_lst.pack(pady=10,padx=(5,5))
 
 def zscore():    
     global df
+    global rows
     global name
     global i
 
@@ -76,7 +77,8 @@ def zscore():
     d = mc / tot_l
     e = rev / tot_a
     z_score = round((1.0*a) + (1.4*b) + (3.3*c) + (0.6*d) + (0.99*e),2)
-    df = df.append({'ticker':i,'name':name,'z score':z_score}, ignore_index = True)
+    rows = {'ticker':i,'name':name,'z score':z_score}
+    df = pd.concat([df, pd.DataFrame([rows])])
     if isinstance(z_score,float) == True:
         messagebox.showinfo(message = "z score for "+str(name)+" = "+str(z_score))
     
